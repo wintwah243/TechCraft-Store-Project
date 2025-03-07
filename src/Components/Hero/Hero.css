@@ -1,0 +1,62 @@
+*{
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.hero{
+    height: 100vh;
+    display: flex;
+    background-color: #ffd8d8;
+}
+.hero-left{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:0px;
+    padding-left: 180px;
+    line-height: 1.1;
+}
+.welcome-msg{
+    margin-right: 75%;
+}
+.hero-left h2{
+    color:black;
+    font-size:26px ;
+    font-weight: 600;
+}
+.hero-left p{
+    color: black;
+    font-size: 90px;
+    font-weight: 700;
+}
+.hand-hand-icon{
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+.hero-latest-btn{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    gap:15px;
+    width: 310px;
+    height: 70px;
+    border-radius: 75px;
+    margin-top: 30px;
+    background:black;
+    color:black;
+    font-size: 22px;
+    font-weight: 500;
+}
+.hero-right{
+    flex:1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hero-right img{
+    height: 500px;
+    width: 500px;
+}
+.btn-msg{
+    color:white;
+}

@@ -1,0 +1,14 @@
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 60px;
+    font-size: 30px;
+    margin-bottom: 1px;
+    color:black;
+    background-color:white;
+    box-shadow: 0 1px 3px -2px #000;
+}
+.navbar span{
+    color:#ffd8d8;
+}
