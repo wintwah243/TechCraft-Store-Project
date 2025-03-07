@@ -11,7 +11,7 @@ const {Sequelize,DataTypes} = require('sequelize');
 app.use(express.json());
 app.use(cors());
 
-const sequelize = new Sequelize('Electrohub','root','shishi243',{
+const sequelize = new Sequelize('Electrohub','root','root',{
     host:'localhost',
     dialect:'mysql',
     logging:false
@@ -20,7 +20,7 @@ const sequelize = new Sequelize('Electrohub','root','shishi243',{
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "shishi243",
+    password: "root",
     database: "Electrohub"
 });
 
@@ -58,12 +58,12 @@ const Product = sequelize.define('Product', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true, // Auto-increment field
+      autoIncrement: true, 
       allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false, // Equivalent to `required: true` in Mongoose
+      allowNull: false, 
     },
     image: {
       type: DataTypes.STRING,
@@ -79,15 +79,15 @@ const Product = sequelize.define('Product', {
     },
     date: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW, // Equivalent to `default: Date.now` in Mongoose
+      defaultValue: Sequelize.NOW, 
     },
     available: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true, // Equivalent to `default: true` in Mongoose
+      defaultValue: true, 
     }
   }, {
-    tableName: 'products', // Optional: specify custom table name if needed
-    timestamps: false, // Optional: disables auto-adding of `createdAt` and `updatedAt` fields if not needed
+    tableName: 'products', 
+    timestamps: false, 
   });
   
 
@@ -99,7 +99,7 @@ const Product = sequelize.define('Product', {
 
         // Create a new product in the database
         const product = await Product.create({
-            id,  // This is auto-incremented, so you may not need to pass it
+            id,  
             name,
             image,
             category,
@@ -181,14 +181,14 @@ const Users = sequelize.define('Users', {
       allowNull: false
     },
     cartData: {
-      type: DataTypes.JSON // Sequelize supports JSON objects for structured data
+      type: DataTypes.JSON 
     },
     date: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     }
   }, {
-    timestamps: false // Disable `createdAt` and `updatedAt` fields (optional)
+    timestamps: false 
   });
 
   const Orders = sequelize.define('Orders', {
@@ -201,10 +201,10 @@ const Users = sequelize.define('Users', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Users', // Refers to the Users table
-            key: 'ID' // The primary key of the Users table
+            model: 'Users', 
+            key: 'ID' 
         },
-        onDelete: 'CASCADE' // Optional: delete orders when a user is deleted
+        onDelete: 'CASCADE' 
     },
     items: {
         type: DataTypes.JSON,
@@ -236,7 +236,7 @@ const Users = sequelize.define('Users', {
         onUpdate: DataTypes.NOW
     }
 }, {
-    timestamps: false // Optional: Disable automatic `createdAt` and `updatedAt` fields if needed
+    timestamps: false 
 });
 
   //Creating endpoint for registering the user
@@ -245,7 +245,7 @@ const Users = sequelize.define('Users', {
 
     let check = await Users.findOne({ where: { email: req.body.email } });
 
-    console.log("User found:", check); // 🔥 Debugging line
+    console.log("User found:", check); 
 
     if (check) {
         return res.status(400).json({ success: false, errors: "existing user found with same email" });
@@ -277,11 +277,11 @@ const Users = sequelize.define('Users', {
   app.post('/login', async (req, res) => {
     try {
         let user = await Users.findOne({ 
-            where: { email: req.body.email } // ✅ Correct way to find a user by email
+            where: { email: req.body.email } 
         });
 
         if (user) {
-            const passCompare = req.body.password === user.password; // Replace with bcrypt comparison if needed
+            const passCompare = req.body.password === user.password; 
             if (passCompare) {
                 const data = {
                     user: {
@@ -305,8 +305,8 @@ const Users = sequelize.define('Users', {
 app.get('/newcollection', async (req, res) => {
     try {
         const products = await Product.findAll({
-            limit: 8,  // Limit to last 8 items
-            order: [['date', 'DESC']]  // Use 'date' field to order products
+            limit: 8,  
+            order: [['date', 'DESC']]  /
         });
         
         console.log("New collections display");
@@ -320,12 +320,11 @@ app.get('/newcollection', async (req, res) => {
 // Creating endpoint for popular items using Sequelize
 app.get('/popularitem', async (req, res) => {
     try {
-        // Fetch products with the category "laptop" and limit the results to 4
         const popular_in_laptop = await Product.findAll({
             where: {
                 category: 'phone'
             },
-            limit: 4,  // Limit to 4 products
+            limit: 4,  
         });
 
         console.log("Popular display");
@@ -400,7 +399,7 @@ app.post('/addtocart', fetchUser, async (req, res) => {
       // Send success message in JSON format
       res.json({ message: "Item added to cart successfully", updatedCartData });
     } catch (error) {
-      console.error("Error adding to cart:", error);  // Log the error for debugging
+      console.error("Error adding to cart:", error);  
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
@@ -414,7 +413,7 @@ app.post('/removefromcart', fetchUser, async (req, res) => {
       
       // Find the user based on user id
       let userData = await Users.findOne({
-        where: { id: req.user.id }, // Make sure you're using `id` here
+        where: { id: req.user.id }, 
       });
   
       // Check if cartData exists
@@ -424,14 +423,14 @@ app.post('/removefromcart', fetchUser, async (req, res) => {
   
       // Check if the item exists in the cart and has quantity greater than 0
       if (userData.cartData[req.body.itemId] > 0) {
-        userData.cartData[req.body.itemId] -= 1;  // Decrease item count
+        userData.cartData[req.body.itemId] -= 1;  
       } else {
         return res.status(400).json({ message: "Item not found in cart or already removed" });
       }
   
       // Update the user's cartData in the database
       await userData.update({
-        cartData: userData.cartData,  // Save updated cartData
+        cartData: userData.cartData, 
       });
   
       res.send("Item removed from cart");
@@ -543,7 +542,7 @@ app.post('/addorder', async (req, res) => {
         }
 
         // Check if the userId exists in the users table
-        const userExists = await Users.findOne({ where: { ID: userId } }); // Use 'ID' here
+        const userExists = await Users.findOne({ where: { ID: userId } }); 
 
         if (!userExists) {
             return res.status(400).json({ message: "User not found with the provided userId" });
@@ -559,7 +558,7 @@ app.post('/addorder', async (req, res) => {
 
         const order = await Orders.create({
             userId,
-            items: JSON.stringify(formattedItems),  // Store items as a JSON string
+            items: JSON.stringify(formattedItems),  
             totalAmount,
             name,
             address,
@@ -576,7 +575,7 @@ app.post('/addorder', async (req, res) => {
         res.status(500).json({
             message: 'Error placing order',
             error: err.message,
-            stack: err.stack // For better debugging
+            stack: err.stack 
         });
     }
 });
